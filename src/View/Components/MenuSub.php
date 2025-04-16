@@ -11,14 +11,12 @@ class MenuSub extends Component
     public string $uuid;
 
     public function __construct(
-        public ?string $id = null,
         public ?string $title = null,
         public ?string $icon = null,
-        public ?string $iconClasses = null,
         public bool $open = false,
         public ?bool $enabled = true,
     ) {
-        $this->uuid = "mary" . md5(serialize($this)) . $id;
+        $this->uuid = "mary" . md5(serialize($this));
     }
 
     public function render(): View|Closure|string
@@ -27,7 +25,7 @@ class MenuSub extends Component
             return '';
         }
 
-        return <<<'BLADE'
+        return <<<'HTML'
                 @aware(['activeBgColor' => 'bg-base-300'])
 
                 @php
@@ -51,9 +49,16 @@ class MenuSub extends Component
                     }"
                 >
                     <details :open="show" @if($submenuActive) open @endif @click.stop>
-                        <summary @click.prevent="toggle()" @class(["hover:text-inherit px-4 py-1.5 my-0.5 text-inherit", $activeBgColor => $submenuActive])>
+                        <summary @click.prevent="toggle()"
+                         {{
+                            $attributes->class([
+                                "hover:text-inherit px-4 py-1.5 my-0.5 text-inherit",
+                                "mary-active-menu $activeBgColor" => $submenuActive
+                            ])
+                        }}
+                         >
                             @if($icon)
-                                <x-mary-icon :name="$icon" @class(['inline-flex my-0.5', $iconClasses]) />
+                                <x-mary-icon :name="$icon" class="inline-flex my-0.5"  />
                             @endif
 
                             <span class="mary-hideable whitespace-nowrap truncate">{{ $title }}</span>
@@ -64,6 +69,6 @@ class MenuSub extends Component
                         </ul>
                     </details>
                 </li>
-                BLADE;
+            HTML;
     }
 }

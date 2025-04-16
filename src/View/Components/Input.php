@@ -11,7 +11,6 @@ class Input extends Component
     public string $uuid;
 
     public function __construct(
-        public ?string $id = null,
         public ?string $label = null,
         public ?string $icon = null,
         public ?string $iconRight = null,
@@ -19,6 +18,7 @@ class Input extends Component
         public ?string $hintClass = 'fieldset-label',
         public ?string $prefix = null,
         public ?string $suffix = null,
+        public ?bool $noMinus = null,
         public ?bool $inline = false,
         public ?bool $clearable = false,
         public ?bool $money = false,
@@ -34,7 +34,7 @@ class Input extends Component
         public ?bool $omitError = false,
         public ?bool $firstErrorOnly = false,
     ) {
-        $this->uuid = "mary" . md5(serialize($this)) . $id;
+        $this->uuid = "mary" . md5(serialize($this));
     }
 
     public function modelName(): ?string
@@ -135,9 +135,9 @@ class Input extends Component
 
                                     {{-- INPUT --}}
                                     <input
+
                                         id="{{ $uuid }}"
                                         placeholder="{{ $attributes->get('placeholder') }} "
-
                                         @if($attributes->has('autofocus') && $attributes->get('autofocus') == true)
                                             autofocus
                                         @endif
@@ -148,6 +148,7 @@ class Input extends Component
                                             x-on:input="$nextTick(() => $wire.set('{{ $modelName() }}', Currency.getUnmasked(), {{ json_encode($attributes->wire('model')->hasModifier('live')) }}))"
                                             inputmode="numeric"
                                         @endif
+
 
                                         {{
                                             $attributes
@@ -202,6 +203,15 @@ class Input extends Component
                     @endif
                 </fieldset>
             </div>
+                @if($noMinus)
+                <script>
+                document.querySelector('#{{ $uuid }}').addEventListener('keydown', function(e) {
+                    if (e.key === '-') {
+                      e.preventDefault();
+                    }
+                  });
+                </script>
+                @endif
             BLADE;
     }
 }

@@ -11,7 +11,6 @@ class File extends Component
     public string $uuid;
 
     public function __construct(
-        public ?string $id = null,
         public ?string $label = null,
         public ?string $hint = null,
         public ?string $hintClass = 'fieldset-label',
@@ -31,7 +30,7 @@ class File extends Component
         public ?bool $firstErrorOnly = false,
 
     ) {
-        $this->uuid = "mary" . md5(serialize($this)) . $id;
+        $this->uuid = "mary" . md5(serialize($this));
     }
 
     public function modelName(): ?string
@@ -168,6 +167,7 @@ class File extends Component
                             {{
                                 $attributes->whereDoesntStartWith('class')->class([
                                     "file-input",
+                                    "w-full",
                                     "!file-input-error" => $errorFieldName() && $errors->has($errorFieldName()) && !$omitError,
                                     "hidden" => $slot->isNotEmpty()
                                 ])
@@ -178,7 +178,6 @@ class File extends Component
                             <!-- PREVIEW AREA -->
                             <div x-ref="preview" class="relative flex">
                                 <div
-                                    wire:ignore
                                     @click="change()"
                                     :class="processing && 'opacity-50 pointer-events-none'"
                                     class="cursor-pointer hover:scale-105 transition-all tooltip"
